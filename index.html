@@ -1,0 +1,114 @@
+<style>
+    * {
+        margin: 0;
+    }
+
+    .canvas {
+
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .box-1 {
+        width: 200px;
+        height: 50px;
+        background-color: aliceblue;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .box-2 {
+        position: absolute;
+    }
+
+    .box-3 {
+        position: absolute;
+        z-index: 1;
+    }
+
+    .mb3-inner-1 {
+        width: 150px;
+        height: 20px;
+        background-color: bisque;
+        position: absolute;
+        margin-top: 40px;
+    }
+
+    .mb3-inner-1 button {
+        border: 0;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+</style>
+
+
+
+<div class="canvas">
+    <div class="box-1" id="id-1" draggable>
+        <p>This is text widget</p>
+    </div>
+
+    <div class="box-2">
+        <img src="https://images.pexels.com/photos/14894269/pexels-photo-14894269.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            alt="image" />
+    </div>
+
+    <div class="box-3">
+        <div class="mb3-inner-1">
+            <button>Click Me</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var selectedComponent;
+    var relativeX, relativeY;
+    var pageX, pageY;
+
+    const components = [
+        document.querySelector('.box-1'),
+        document.querySelector('.box-2'),
+        document.querySelector('.box-3'),
+    ]
+
+    const comp = document.querySelector('.box-2');
+
+    function mouse_move_viewer(event) {
+        const componentRect = comp.getBoundingClientRect();
+
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        relativeX = mouseX - componentRect.left;
+        relativeY = mouseY - componentRect.top;
+    }
+
+
+    function click_event_viewer(event) {
+        event.preventDefault();
+        const { screenX, screenY } = event;
+        pageX = event.pageX;
+        pageY = event.pageY;
+        const ownX = selectedComponent.offsetWidth;
+        const ownY = selectedComponent.offsetHeight;
+
+        console.log("Box (x, y): ", pageX, pageY);
+        console.log("Own (x, y): ", ownX, ownY);
+        console.log("Relative (x, y): ", relativeX, relativeY);
+        console.log("Screen (x, y): ", screenX, screenY);
+
+        if (pageX != 0 && pageY != 0) {
+            selectedComponent.style.marginTop = pageY - relativeY;
+            selectedComponent.style.marginLeft = pageX - relativeX;
+        }
+    }
+
+
+    components.forEach(cmp => {
+        cmp.addEventListener('mousedown', () => { selectedComponent = cmp });
+        cmp.addEventListener('mousemove', mouse_move_viewer);
+        cmp.addEventListener('drag', click_event_viewer);
+    })
+
+</script>
